@@ -1,0 +1,9 @@
+(a:=2)
+if(a>1)then
+	if(a>2)then
+		print a
+	else
+		print (a+2)
+	fi
+fi
+print a
