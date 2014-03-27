@@ -54,16 +54,34 @@ block * compound_statement::build(tokenizer &t) {
 #ifdef DEBUG
                 cout << "----statement:b: 0: compound statement: add child" <<endl;
 #endif
+                add_child = false;
                 if(d.see(t.get())) b = d.get(t.get());
                 else b = new statement();
                 child.push_back(b);
+                break;
             }
             if(t.has_token()){
+#ifdef DEBUG
+                cout << "----statement:b: 0: compound statement: have some tokens checking for ;" <<endl;
+#endif
                 if(";" == t.get()) {
+#ifdef DEBUG
+                    cout << "----statement:b: 0: compound statement: expecting child" <<endl;
+#endif
                     t.pop();
                     add_child = true;
-                } else ++part;
-            } else ++part;
+                } else {
+#ifdef DEBUG
+                    cout << "----statement:b: 0: compound statement: ending with token: "+t.get() <<endl;
+#endif
+                    ++part;
+                }
+            } else {
+#ifdef DEBUG
+                cout << "----statement:b: 0: compound statement: ending without token" <<endl;
+#endif
+                ++part;
+            }
             break;
         default:
             throw new error("Unexpected in compound statement");
@@ -112,18 +130,22 @@ block * if_statement::build(tokenizer &t) {
             break;
         case 2:
 #ifdef DEBUG
-            cout << "----statement:b: 2: if statement: <else or fi>" <<endl;
+            cout << "----statement:b: 2: if statement: searching <else or fi>" <<endl;
 #endif
             if("else" == t.get()) part = 3;
             else if("fi" == t.get()) part = 5;
+            else throw new error("Unexpected keyword: "+t.get());
             break;
         case 3:
 #ifdef DEBUG
-            cout << "----statement:b: 3: if statement: else keyword" <<endl;
+            cout << "----statement:b: 3: if statement: searching for else keyword" <<endl;
 #endif
             if("else" != t.get()) throw new error("Expected else statement");
             else t.pop();
             if(t.has_token()) throw new error("Expected new line after else statement");
+#ifdef DEBUG
+            cout << "----statement:b: 5: if statement: got else keyword" <<endl;
+#endif
             ++part;
             break;
         case 4:
@@ -136,11 +158,13 @@ block * if_statement::build(tokenizer &t) {
             break;
         case 5:
 #ifdef DEBUG
-            cout << "----statement:b: 5: if statement: fi keyword" <<endl;
+            cout << "----statement:b: 5: if statement: expecting fi keyword" <<endl;
 #endif
             if("fi" != t.get()) throw new error("Expected fi statement");
             else t.pop();
-//            if(t.has_token()) throw new error("Expected new line after fi statement");
+#ifdef DEBUG
+            cout << "----statement:b: 5: if statement: removed fi keyword" <<endl;
+#endif
             ++part;
             break;
         default:
@@ -209,11 +233,15 @@ block * while_statement::build(tokenizer &t) {
             break;
         case 2:
 #ifdef DEBUG
-            cout << "----statement:b: 0: while statement: done keyword" <<endl;
+            cout << "----statement:b: 0: while statement: expecting done keyword" <<endl;
 #endif
             if("done" != t.get()) throw new error("Expected done statement");
-            else t.pop(); // removing 'done' from tokenizer object
-//            if(t.has_token()) throw new error("Expected new line after done statement");
+            else {
+#ifdef DEBUG
+                cout << "----statement:b: 0: while statement: removed done keyword" <<endl;
+#endif
+                t.pop(); // removing 'done' from tokenizer object
+            }
             ++part;
             break;
         default:
