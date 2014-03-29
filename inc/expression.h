@@ -139,6 +139,7 @@ public:
     int eval(state &);
 };
 
+// TODO implement as statement
 class skip_expression : public expression
 {
 public:

@@ -10,9 +10,9 @@ int main(int argc, char*argv[]){
     state s;
 	tokenizer t;
 #if DEBUG
-    stack<block *> blocks;
-#endif
     vector<string> blks;
+#endif
+    stack<block *> blocks;
     block *exe;
     ifstream is;
     if(argc >= 2) is.open(argv[1]);
